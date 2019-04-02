@@ -1,5 +1,6 @@
 from flask import Flask, request, redirect, render_template
 from flask_sqlalchemy import SQLAlchemy
+import re
 app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://get-it-done:get-it-done@localhost:8889/get-it-done'
@@ -26,12 +27,55 @@ class User(db.Model):
         self.email = email
         self.password = password
 
-@app.route('/login')
+@app.route('/login', methods=['POST', 'GET'])
 def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        user = User.query.filter_by(email=email).first()
+        if user and user.password == password:
+            # TODO - remember user has logged in
+            return redirect('/')
+        else:
+            # TODO - login failed
+            return "<h1>failed</h1>"
     return render_template('login.html')
 
-@app.route('/register')
+@app.route('/register', methods=['POST', 'GET'])
 def register():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        verify = request.form['verify']
+        # TODO - validate user input
+        emailErr = ''
+        passwordErr = ''
+        verifyErr = ''
+        valid = True
+        validString = re.compile(r'^(?=\S{3,120}$)')
+        validEmail = re.compile(r'^(?=\S{5,120}$)(?=[^@]*[@][^@]*$)(?=[^\.].*[^\.]@[^\.].*\.[^\.]+$)(?!.*\.\..*$)')
+        if not validEmail.match(email):
+            emailErr = "Invalid Email"
+            valid = False
+        if not validString.match(password):
+            passwordErr = "Password must be 3-120 characters with no spaces"
+            valid = False
+        if password != verify:
+            verifyErr = "Password does not match"
+            valid = False
+        if not valid:
+            return render_template("register.html", email=email, emailErr=emailErr,
+                passwordErr = passwordErr, verifyErr=verifyErr)
+        existing_user = User.query.filter_by(email=email).first()
+        if not existing_user:
+            new_user = User(email, password)
+            db.session.add(new_user)
+            db.session.commit()
+            return redirect('/')
+            # TODO - remember the user
+        else:
+            #TODO - better message
+            return "<h1>user exists</h1>"
     return render_template('register.html')
 
 @app.route('/', methods=['POST', 'GET'])

@@ -8,18 +8,33 @@
       <td>
         <input id="email" name='email' type='email' value="{{email}}">
       </td>
+      {% if "{{emailErr}}" %}
+      <td>
+        <span>{{emailErr}}</span>
+      </td>
+      {% endif %}
     </tr>
     <tr>
       <td><label for="password">Password:</label></td>
       <td>
         <input id="password" name="password" type="password">
       </td>
+      {% if "{{passwordErr}}" %}
+      <td>
+        <span>{{passwordErr}}</span>
+      </td>
+      {% endif %}
     </tr>
     <tr>
       <td><label for="verify">Verify Password:</label></td>
       <td>
         <input id="verify" name="verify" type="password">
       </td>
+      {% if "{{verifyErr}}" %}
+      <td>
+        <span>{{verifyErr}}</span>
+      </td>
+      {% endif %}
     </tr>
   </table>
   <input type="submit" vaule="Register">
