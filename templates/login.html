@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Login to Get it Done</h1>
+<p>If you don't have an account, you may <a href="/register">register</a> for one</p>
+<form action="/login" method="POST">
+  <table>
+    <tr>
+      <td><label for="email">Email:</label></td>
+      <td>
+        <input id="email" name="email" type="email" value="{{email}}">
+      </td>
+    </tr>
+    <tr>
+      <td><label for="password">Password:</label></td>
+      <td>
+        <input id="password" name="password" type="password">
+      </td>
+    </tr>
+  </table>
+  <input type="submit" vaule="login">
+</form>
+{% endblock %}
